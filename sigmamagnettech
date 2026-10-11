@@ -200,9 +200,22 @@ Button.TextSize = 18
 Button.Parent = ScreenGui
 
 UserInputService.InputBegan:Connect(function(input, gameProcessed)
-    if input.KeyCode == Enum.KeyCode.E then
-        if gameProcessed then return end
+    -- Nếu người chơi đang gõ chat (TextBoxFocused), bỏ qua hoàn toàn để không làm phiền khung chat
+    if UserInputService:GetFocusedTextBox() then
+        return
+    end
 
+    if input.KeyCode == Enum.KeyCode.RightShift then
+        -- Ẩn hoặc hiện nút sigmamagnet tech bằng phím Shift phải
+        ScreenGui.Enabled = not ScreenGui.Enabled
+        return
+    end
+
+    if gameProcessed then
+        return
+    end
+
+    if input.KeyCode == Enum.KeyCode.E then
         -- TP + magnet
         teleportToClosest()
 
@@ -221,10 +234,6 @@ UserInputService.InputBegan:Connect(function(input, gameProcessed)
                 0
             )
         end
-        
-    elseif input.KeyCode == Enum.KeyCode.RightShift then
-        -- Ẩn hoặc hiện toàn bộ ScreenGui chứa nút sigmamagnet tech
-        ScreenGui.Enabled = not ScreenGui.Enabled
     end
 end)
 
