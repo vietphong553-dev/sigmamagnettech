@@ -162,14 +162,13 @@ local function startMagnetPull()
 end
 
 ------------------------------------------------
--- TP TO CLOSEST (Đã đổi vị trí dịch chuyển từ đầu sang thân)
+-- TP TO CLOSEST
 ------------------------------------------------
 
 local function teleportToClosest()
     local targetRoot = getClosestTarget()
 
     if targetRoot and rootPart then
-        -- Dịch chuyển thẳng vào vị trí thân (HumanoidRootPart) của mục tiêu, bỏ cộng chiều cao ở đầu
         local targetPos = targetRoot.Position
 
         rootPart.CFrame = CFrame.new(
@@ -183,15 +182,26 @@ local function teleportToClosest()
 end
 
 ------------------------------------------------
--- R KEY
+-- GUI & INPUT SETUP
 ------------------------------------------------
 
-UserInputService.InputBegan:Connect(function(input, gameProcessed)
-    if gameProcessed then
-        return
-    end
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "ClosestTPGui"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.Parent = game:GetService("CoreGui")
 
-    if input.KeyCode == Enum.KeyCode.R then
+local Button = Instance.new("TextButton")
+Button.Name = "TPButton"
+Button.Size = UDim2.new(0, 170, 0, 50)
+Button.Position = UDim2.new(0.5, -85, 0.8, 0)
+Button.BackgroundTransparency = 0.1
+Button.Text = "sigmamagnet tech"
+Button.TextSize = 18
+Button.Parent = ScreenGui
+
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if input.KeyCode == Enum.KeyCode.E then
+        if gameProcessed then return end
 
         -- TP + magnet
         teleportToClosest()
@@ -211,6 +221,10 @@ UserInputService.InputBegan:Connect(function(input, gameProcessed)
                 0
             )
         end
+        
+    elseif input.KeyCode == Enum.KeyCode.RightShift then
+        -- Ẩn hoặc hiện toàn bộ ScreenGui chứa nút sigmamagnet tech
+        ScreenGui.Enabled = not ScreenGui.Enabled
     end
 end)
 
@@ -261,28 +275,13 @@ task.spawn(function()
 end)
 
 ------------------------------------------------
--- TP BUTTON (Draggable & Renamed)
+-- TP BUTTON (Draggable)
 ------------------------------------------------
-
-local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "ClosestTPGui"
-ScreenGui.ResetOnSpawn = false
-ScreenGui.Parent = game:GetService("CoreGui")
-
-local Button = Instance.new("TextButton")
-Button.Name = "TPButton"
-Button.Size = UDim2.new(0, 170, 0, 50)
-Button.Position = UDim2.new(0.5, -85, 0.8, 0)
-Button.BackgroundTransparency = 0.1
-Button.Text = "sigmamagnet tech"
-Button.TextSize = 18
-Button.Parent = ScreenGui
 
 Button.MouseButton1Click:Connect(function()
     teleportToClosest()
 end)
 
--- Tính năng kéo thả (Draggable) cho mobile và PC
 local dragging, dragInput, dragStart, startPos
 
 Button.InputBegan:Connect(function(input)
